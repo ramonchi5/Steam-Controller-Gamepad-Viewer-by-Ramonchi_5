@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Reflection;
+using System.Globalization;
 using SteamControllerGamepadViewer.Hid;
 using SteamControllerGamepadViewer.Sdl;
 using SteamControllerGamepadViewer.State;
@@ -61,6 +62,25 @@ app.MapGet("/health", (ControllerStateHub hub) => Results.Json(new
 
 app.MapGet("/api/hid", (SteamHidState hid) => Results.Json(hid.Status, AppJson.Options));
 
+app.MapGet("/controller-art.svg", async (HttpContext context) =>
+{
+    if (!EmbeddedWebAssets.TryReadText("assets/controller_config_controller_triton.svg", out var svg))
+    {
+        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        return;
+    }
+
+    var bodyOutline = QueryLineScale(QueryFirst(context.Request.Query, "bodyLines", "bodyOutline"), 10);
+    var innerBodyOutline = QueryLineScale(QueryFirst(context.Request.Query, "innerBodyLines", "innerBodyOutline"), 10);
+    var joystickOutline = QueryLineScale(QueryFirst(context.Request.Query, "joystickLines", "joystickOutline"), 10);
+    var buttonOutline = QueryLineScale(QueryFirst(context.Request.Query, "btnLines", "buttonOutline"), 10);
+    var lineColor = QueryHexColor(QueryFirst(context.Request.Query, "linesColor", "LinesColor"), "ffffff");
+    var lineOpacity = QueryPercentOpacity(QueryFirst(context.Request.Query, "linesOpac", "LinesOpac", "linesOpacity", "LinesOpacity"), 55);
+    context.Response.Headers.CacheControl = "no-store";
+    context.Response.ContentType = "image/svg+xml";
+    await context.Response.WriteAsync(ControllerArtStyler.Apply(svg, bodyOutline, innerBodyOutline, joystickOutline, buttonOutline, lineColor, lineOpacity), context.RequestAborted);
+});
+
 app.MapGet("/{**assetPath}", async (string? assetPath, HttpContext context) =>
 {
     var path = string.IsNullOrWhiteSpace(assetPath) ? "index.html" : assetPath;
@@ -78,6 +98,67 @@ app.MapGet("/{**assetPath}", async (string? assetPath, HttpContext context) =>
 });
 
 app.Run();
+
+static double QueryNumber(string? value, double fallback, double min, double max)
+{
+    value = value?.Trim();
+    if (value?.EndsWith('%') == true)
+    {
+        value = value[..^1].TrimEnd();
+    }
+
+    if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var number))
+    {
+        return fallback;
+    }
+
+    return Math.Min(max, Math.Max(min, number));
+}
+
+static double QueryLineScale(string? value, double fallbackUnits)
+    => QueryNumber(value, fallbackUnits, 0, 40) / 10;
+
+static double QueryPercentOpacity(string? value, double fallbackPercent)
+    => QueryNumber(value, fallbackPercent, 0, 100) / 100;
+
+static string? QueryFirst(IQueryCollection query, params string[] names)
+{
+    foreach (var name in names)
+    {
+        if (query.TryGetValue(name, out var values) && values.Count > 0)
+        {
+            return values[0];
+        }
+    }
+
+    return null;
+}
+
+static string QueryHexColor(string? value, string fallback)
+{
+    var hex = value?.Trim().TrimStart('#').ToLowerInvariant();
+    if (hex is null)
+    {
+        return "#" + fallback;
+    }
+
+    if (hex.Length == 3)
+    {
+        hex = string.Concat(hex.Select(c => new string(c, 2)));
+    }
+    else if (hex.Length == 4)
+    {
+        hex = string.Concat(hex.Take(3).Select(c => new string(c, 2)));
+    }
+    else if (hex.Length == 8)
+    {
+        hex = hex[..6];
+    }
+
+    return hex.Length == 6 && hex.All(Uri.IsHexDigit)
+        ? "#" + hex
+        : "#" + fallback;
+}
 
 internal static class AppJson
 {
@@ -128,6 +209,22 @@ internal static class EmbeddedWebAssets
         return !ReferenceEquals(stream, Stream.Null);
     }
 
+    public static bool TryReadText(string path, out string text)
+    {
+        if (!TryOpen(path, out var stream, out _))
+        {
+            text = string.Empty;
+            return false;
+        }
+
+        using (stream)
+        using (var reader = new StreamReader(stream))
+        {
+            text = reader.ReadToEnd();
+            return true;
+        }
+    }
+
     private static string NormalizeResourceName(string resourceName)
         => resourceName.Replace('\\', '/').TrimStart('/');
 
@@ -141,4 +238,57 @@ internal static class EmbeddedWebAssets
             ".svg" => "image/svg+xml",
             _ => "application/octet-stream",
         };
+}
+
+internal static class ControllerArtStyler
+{
+    public static string Apply(string svg, double bodyOutlineScale, double innerBodyOutlineScale, double joystickOutlineScale, double buttonOutlineScale, string lineColor, double lineOpacity)
+    {
+        var body = (1.3 * bodyOutlineScale).ToString("0.###", CultureInfo.InvariantCulture);
+        var inner = (0.9 * innerBodyOutlineScale).ToString("0.###", CultureInfo.InvariantCulture);
+        var joystick = (0.9 * joystickOutlineScale).ToString("0.###", CultureInfo.InvariantCulture);
+        var button = (0.9 * buttonOutlineScale).ToString("0.###", CultureInfo.InvariantCulture);
+        var opacity = lineOpacity.ToString("0.###", CultureInfo.InvariantCulture);
+
+        return MarkInnerBodyOutlines(svg)
+            .Replace(
+                "<svg width=\"456\" height=\"320\" viewBox=\"0 0 456 320\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">",
+                "<svg width=\"504\" height=\"368\" viewBox=\"-24 -24 504 368\" fill=\"none\" overflow=\"visible\" xmlns=\"http://www.w3.org/2000/svg\">",
+                StringComparison.Ordinal)
+            .Replace(
+                "path[stroke], circle[stroke], rect[stroke] { stroke-width: 0.9px; }",
+                $"svg {{ overflow: visible; }}\npath[stroke], circle[stroke], rect[stroke] {{ stroke-width: {button}px; }}",
+                StringComparison.Ordinal)
+            .Replace(
+                "path[stroke-width=\"4\"] { stroke-width: 1.3px; }",
+                $"path[stroke-width=\"4\"] {{ stroke-width: {body}px; }}\n.inner-body-outline[stroke] {{ stroke-width: {inner}px; }}\n.joystick-outline[stroke] {{ stroke-width: {joystick}px; }}",
+                StringComparison.Ordinal)
+            .Replace("</style>", $"</style>\n<g opacity=\"{opacity}\">", StringComparison.Ordinal)
+            .Replace("stroke=\"white\"", $"stroke=\"{lineColor}\"", StringComparison.Ordinal)
+            .Replace("fill=\"white\"", $"fill=\"{lineColor}\"", StringComparison.Ordinal)
+            .Replace("</svg>", "</g>\n</svg>", StringComparison.Ordinal);
+    }
+
+    private static string MarkInnerBodyOutlines(string svg)
+        => svg
+            .Replace(
+                "<circle cx=\"162.133\" cy=\"108.758\"",
+                "<circle class=\"joystick-outline\" cx=\"162.133\" cy=\"108.758\"",
+                StringComparison.Ordinal)
+            .Replace(
+                "<circle cx=\"34.5\" cy=\"34.5\"",
+                "<circle class=\"joystick-outline\" cx=\"34.5\" cy=\"34.5\"",
+                StringComparison.Ordinal)
+            .Replace(
+                "<path d=\"M260.328 121.388",
+                "<path class=\"inner-body-outline\" d=\"M260.328 121.388",
+                StringComparison.Ordinal)
+            .Replace(
+                "<path d=\"M129.908 122.978",
+                "<path class=\"inner-body-outline\" d=\"M129.908 122.978",
+                StringComparison.Ordinal)
+            .Replace(
+                "<path d=\"M380.707 147.108",
+                "<path class=\"inner-body-outline\" d=\"M380.707 147.108",
+                StringComparison.Ordinal);
 }
