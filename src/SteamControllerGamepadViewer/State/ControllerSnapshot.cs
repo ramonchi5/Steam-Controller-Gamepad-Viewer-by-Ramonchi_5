@@ -37,6 +37,8 @@ public sealed record ControllerButtons
     public bool RightBumper { get; init; }
     public bool LeftStick { get; init; }
     public bool RightStick { get; init; }
+    public bool LeftStickTouch { get; init; } = true;
+    public bool RightStickTouch { get; init; } = true;
     public bool DpadUp { get; init; }
     public bool DpadDown { get; init; }
     public bool DpadLeft { get; init; }
@@ -45,6 +47,8 @@ public sealed record ControllerButtons
     public bool LeftGripLower { get; init; }
     public bool RightGripUpper { get; init; }
     public bool RightGripLower { get; init; }
+    public bool LeftGripTouch { get; init; }
+    public bool RightGripTouch { get; init; }
 }
 
 public sealed record ControllerAxes

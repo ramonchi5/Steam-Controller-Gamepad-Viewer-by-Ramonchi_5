@@ -153,7 +153,7 @@ function applyViewStyle(style) {
       btnLines: (style.buttonOutline * 10).toFixed(3),
       linesColor: style.linesColor.hex,
       linesOpac: (style.linesOpacity * 100).toFixed(3),
-      v: "20260523v2",
+      v: "20260618v3",
     });
     art.setAttribute("href", `/controller-art.svg?${artParams}`);
   }
@@ -361,7 +361,7 @@ function setActive(name, active, strength = 1) {
   }
 }
 
-function setStick(name, x, y, pressed) {
+function setStick(name, x, y, pressed, touched = true) {
   const stick = sticks[name];
   if (!stick?.dot) {
     return;
@@ -370,6 +370,7 @@ function setStick(name, x, y, pressed) {
   const nx = clampSigned(x);
   const ny = clampSigned(y);
   const moved = Math.hypot(nx, ny) > 0.08;
+  stick.dot.classList.toggle("touched", Boolean(touched) || moved);
   stick.dot.classList.toggle("moved", moved);
   stick.dot.classList.toggle("pressed", Boolean(pressed));
   stick.dot.setAttribute("transform", `translate(${(nx * 23).toFixed(2)} ${(ny * 23).toFixed(2)})`);
@@ -472,9 +473,11 @@ function applyState(state) {
   setActive("lg1", b.leftGripLower);
   setActive("rg2", b.rightGripUpper);
   setActive("rg1", b.rightGripLower);
+  setActive("left-grip-touch", b.leftGripTouch);
+  setActive("right-grip-touch", b.rightGripTouch);
 
-  setStick("left", a.leftStickX ?? 0, a.leftStickY ?? 0, b.leftStick);
-  setStick("right", a.rightStickX ?? 0, a.rightStickY ?? 0, b.rightStick);
+  setStick("left", a.leftStickX ?? 0, a.leftStickY ?? 0, b.leftStick, b.leftStickTouch ?? true);
+  setStick("right", a.rightStickX ?? 0, a.rightStickY ?? 0, b.rightStick, b.rightStickTouch ?? true);
   setTouchpad("left", state.leftTouchpad);
   setTouchpad("right", state.rightTouchpad);
 }

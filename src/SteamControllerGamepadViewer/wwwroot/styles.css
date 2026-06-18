@@ -237,6 +237,29 @@ body.show-title .title {
   filter: drop-shadow(0 0 7px rgb(var(--button-pressed-rgb) / calc(0.72 * var(--shine-opacity)))) drop-shadow(0 0 3px rgba(242, 248, 255, calc(0.58 * var(--shine-opacity))));
 }
 
+.control.grip-sensor-line,
+.control.grip-sensor-line.active {
+  fill: none !important;
+  stroke: rgba(205, 209, 213, 0.74);
+  stroke-width: calc(1.9px * var(--body-line-scale));
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.control.grip-sensor-inner,
+.control.grip-sensor-inner.active {
+  stroke-width: calc(1.25px * var(--body-line-scale));
+}
+
+.grip-sensor-line {
+  opacity: 0;
+}
+
+.grip-sensor-line.active {
+  opacity: calc(0.48 * var(--button-pressed-opacity));
+  filter: none;
+}
+
 .preview-all .bumper-control,
 .preview-all .back-button {
   opacity: 1;
@@ -329,6 +352,11 @@ body.show-title .title {
   stroke: rgba(242, 248, 255, 0.98);
   stroke-width: calc(1.6px * var(--outline-scale));
   filter: drop-shadow(0 0 9px rgb(var(--button-pressed-rgb) / calc(0.9 * var(--shine-opacity)))) drop-shadow(0 0 4px rgba(242, 248, 255, calc(0.72 * var(--shine-opacity))));
+}
+
+.stick-position:not(.touched) {
+  opacity: 0;
+  filter: none;
 }
 
 .pad-dot {

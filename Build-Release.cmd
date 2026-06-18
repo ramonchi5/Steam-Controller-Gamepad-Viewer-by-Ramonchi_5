@@ -2,7 +2,7 @@
 setlocal
 
 set "RELEASE_NAME=%~1"
-if "%RELEASE_NAME%"=="" set "RELEASE_NAME=v2.Steam.Controller.Viewer"
+if "%RELEASE_NAME%"=="" set "RELEASE_NAME=v3.Steam.Controller.Viewer"
 
 set "ROOT=%~dp0"
 set "PROJECT=%ROOT%src\SteamControllerGamepadViewer\SteamControllerGamepadViewer.csproj"

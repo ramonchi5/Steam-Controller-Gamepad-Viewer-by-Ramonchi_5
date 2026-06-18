@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Steam Controller Gamepad Viewer</title>
-  <link rel="stylesheet" href="/styles.css?v=20260523v2">
+  <link rel="stylesheet" href="/styles.css?v=20260617grip">
 </head>
 <body>
   <main class="viewer" aria-label="Steam Controller input overlay">
@@ -183,6 +183,15 @@
 
       <image class="controller-art" data-controller-art href="/controller-art.svg?v=20260523v2" x="-24" y="-24" width="504" height="368"/>
 
+      <g class="grip-sensors" aria-hidden="true">
+        <path class="control grip-sensor-line" data-control="left-grip-touch" d="M27.6 100.1C17.9 134.6 8.7 168.8 4.71402 201.518C0.760376 233.68 -2.5752 277.541 22.934 302.458"/>
+        <path class="control grip-sensor-line grip-sensor-inner" data-control="left-grip-touch" d="M30.9 110.5C22.2 143.7 15.1 176.9 11.8 206.8C8.4 237.7 7.4 270.8 27.6 293.6"/>
+        <path class="control grip-sensor-line grip-sensor-inner" data-control="left-grip-touch" d="M34.5 119.9C26.9 151.5 21.2 183.2 18.8 211.9C16.3 239.6 17.2 265.9 31.7 284.1"/>
+        <path class="control grip-sensor-line" data-control="right-grip-touch" d="M427.7 100.1C437.4 134.6 446.6 168.8 450.551 201.518C454.505 233.68 457.84 277.541 432.331 302.458"/>
+        <path class="control grip-sensor-line grip-sensor-inner" data-control="right-grip-touch" d="M424.4 110.5C433.1 143.7 440.2 176.9 443.5 206.8C446.9 237.7 447.9 270.8 427.7 293.6"/>
+        <path class="control grip-sensor-line grip-sensor-inner" data-control="right-grip-touch" d="M420.8 119.9C428.4 151.5 434.1 183.2 436.5 211.9C439 239.6 438.1 265.9 423.6 284.1"/>
+      </g>
+
       <g class="pressed-controls" data-pressed-back-layer mask="url(#backButtonTrackpadMask)"></g>
       <g class="pressed-controls" data-pressed-trigger-layer mask="url(#triggerOcclusionMask)"></g>
       <g class="pressed-controls" data-pressed-layer></g>
@@ -225,6 +234,6 @@
     </svg>
     <div class="status" data-status>Starting</div>
   </main>
-  <script src="/app.js?v=20260523v2"></script>
+  <script src="/app.js?v=20260617grip"></script>
 </body>
 </html>

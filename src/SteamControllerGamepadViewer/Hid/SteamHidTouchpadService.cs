@@ -300,7 +300,7 @@ internal sealed class SteamHidTouchpadService : BackgroundService
 
             if (parsed)
             {
-                snapshot = new SteamHidSnapshot(null, null, left, right, DateTimeOffset.UtcNow);
+                snapshot = new SteamHidSnapshot(null, null, null, left, right, DateTimeOffset.UtcNow);
                 return true;
             }
         }
@@ -335,6 +335,7 @@ internal sealed class SteamHidTouchpadService : BackgroundService
             rightPressure);
 
         snapshot = new SteamHidSnapshot(
+            buttons,
             new ControllerButtons
             {
                 A = HasFlag(buttons, 0x00000001),
@@ -343,6 +344,8 @@ internal sealed class SteamHidTouchpadService : BackgroundService
                 Y = HasFlag(buttons, 0x00000008),
                 QuickAccess = HasFlag(buttons, 0x00000010),
                 RightStick = HasFlag(buttons, 0x00000020),
+                LeftStickTouch = HasFlag(buttons, 0x01000000),
+                RightStickTouch = HasFlag(buttons, 0x00100000),
                 View = HasFlag(buttons, 0x00004000),
                 RightGripUpper = HasFlag(buttons, 0x00000080),
                 RightGripLower = HasFlag(buttons, 0x00000100),
@@ -357,6 +360,8 @@ internal sealed class SteamHidTouchpadService : BackgroundService
                 LeftGripUpper = HasFlag(buttons, 0x00020000),
                 LeftGripLower = HasFlag(buttons, 0x00040000),
                 LeftBumper = HasFlag(buttons, 0x00080000),
+                RightGripTouch = HasFlag(buttons, 0x10000000),
+                LeftGripTouch = HasFlag(buttons, 0x20000000),
             },
             new ControllerAxes
             {

@@ -1,6 +1,6 @@
 # Steam Controller Gamepad Viewer
 
-Local Steam Controller overlay for OBS. It runs a small local-only web server on `127.0.0.1`, reads the Steam Controller through SDL3 plus Valve HID reports, and draws a Steam Controller viewer with live trackpad finger tracking.
+Local Steam Controller overlay for OBS. It runs a small local-only web server on `127.0.0.1`, reads the Steam Controller through SDL3 plus Valve HID reports, and draws a Steam Controller viewer with live trackpad finger tracking, grip sense, and capacitive stick touch.
 
 This is currently a browser-source overlay. A native OBS plugin would be a better long-term version, but the local URL works offline once the app is running and does not require gamepadviewer.com or any internet service.
 
@@ -10,7 +10,7 @@ The URL only works while `SteamControllerGamepadViewer.exe` is running. After re
 
 The release starts only when you explicitly run `SteamControllerGamepadViewer.exe`. If you want to avoid clicking the exe every time, the same zip includes optional install/uninstall scripts for a Windows Startup shortcut.
 
-There is one v2 release zip:
+There is one release zip:
 
 - Portable by default: run `SteamControllerGamepadViewer.exe` whenever you want the OBS URL to work.
 - Optional Start with Windows: run `Install Start With Windows.cmd` from the extracted folder if you want Windows to launch it for you.
@@ -21,7 +21,7 @@ This viewer was coded with help from OpenAI Codex. The project is human-directed
 
 ## Presets
 
-Default Preset:
+Default v3 Preset:
 
 ```text
 http://127.0.0.1:31337/?bodyLines=10___innerBodyLines=10___joystickLines=10___btnLines=10___backBtnLines=10___linesColor=#ffffff___linesOpac=55%___bodyOpac=30%___bodyColor=#000000___btnIdle=#25a7ff___btnIdleOpac=0%___btnPressed=#25a7ff___btnPressedOpac=100%___triggerIdleOpac=0%___triggerIdleLinesOpac=0%___shine=100%
@@ -49,7 +49,7 @@ http://127.0.0.1:31337/?bodyLines=30___innerBodyLines=30___joystickLines=30___bt
 
 You can customize the overlay directly from the OBS Browser Source URL. Options can be separated with `___` for readability, as shown above, or with the normal `&` query separator. Both formats work.
 
-Line thickness uses `10` as the default v2 look. Use `15` for 1.5x, `20` for 2x, `30` for 3x, or `0` to hide that line group.
+Line thickness uses `10` as the default v3 look. Use `15` for 1.5x, `20` for 2x, `30` for 3x, or `0` to hide that line group.
 
 Opacity values accept a percent sign, such as `55%` or `0%`. Colors use normal HTML hex colors, such as `#25a7ff`.
 
@@ -87,9 +87,10 @@ Extra testing options:
 2. Double-click `SteamControllerGamepadViewer.exe`.
 3. Add one of the preset URLs above as an OBS Browser Source.
 
-The v2 release zip contains:
+The release zip contains:
 
 - `SteamControllerGamepadViewer.exe`
+- `Stop Steam Controller Viewer.exe`
 - `README.md`
 - `LICENSE`
 - `THIRD_PARTY_NOTICES.md`
@@ -125,9 +126,14 @@ The current target is Valve's Steam Controller. The app does not open Steam's co
 
 Supported inputs:
 
-- ABXY, dpad, bumpers, analog triggers, sticks, L3/R3, Steam/View/Menu.
+- ABXY, dpad, bumpers, analog triggers, sticks, L3/R3, capacitive stick touch, Steam/View/Menu.
 - Left and right trackpad touch position, click pressure, and live finger position.
 - Four rear grip buttons.
+- Left and right grip-sense strips.
+
+Capacitive stick touch controls whether the large moving joystick dots are visible. The small center dots stay visible as neutral reference points. If a stick moves more than about 8% from center, the moving dot is shown even if the capacitive touch sensor misses your thumb.
+
+Gyro is not displayed in v3. A 2D gyro display was tested and removed because it was harder to read than the rest of the overlay.
 
 SDL3 is loaded from the app folder first, then from the default Steam install folders. You can override the path with `--sdl3 "C:\path\to\SDL3.dll"` or the `SDL3_PATH` environment variable.
 
@@ -143,7 +149,7 @@ Build-Release.cmd
 
 The release zip is created under `artifacts\release`:
 
-- `v2.Steam.Controller.Viewer.zip`
+- `v3.Steam.Controller.Viewer.zip`
 
 Upload that zip to GitHub Releases. Do not upload the normal `publish` folder unless you specifically want a framework-dependent developer build.
 

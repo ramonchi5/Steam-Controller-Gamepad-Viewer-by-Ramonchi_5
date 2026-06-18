@@ -30,6 +30,7 @@ internal sealed class SteamHidState
             {
                 LastReportAt = DateTimeOffset.UtcNow,
                 ReportsParsed = _status.ReportsParsed + 1,
+                LastRawButtons = snapshot.RawButtons,
                 LastButtons = snapshot.Buttons,
                 LastAxes = snapshot.Axes,
                 LastLeft = snapshot.Left,
@@ -103,6 +104,7 @@ internal sealed class SteamHidState
 }
 
 internal readonly record struct SteamHidSnapshot(
+    uint? RawButtons,
     ControllerButtons? Buttons,
     ControllerAxes? Axes,
     ControllerTouchpad Left,
@@ -119,6 +121,7 @@ internal sealed record SteamHidStatus
     public int LastReportLength { get; init; }
     public byte LastReportId { get; init; }
     public DateTimeOffset? LastReportAt { get; init; }
+    public uint? LastRawButtons { get; init; }
     public ControllerButtons? LastButtons { get; init; }
     public ControllerAxes? LastAxes { get; init; }
     public ControllerTouchpad? LastLeft { get; init; }
