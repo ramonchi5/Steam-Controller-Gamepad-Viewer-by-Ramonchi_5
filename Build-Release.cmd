@@ -2,7 +2,7 @@
 setlocal
 
 set "RELEASE_NAME=%~1"
-if "%RELEASE_NAME%"=="" set "RELEASE_NAME=v3.Steam.Controller.Viewer"
+if "%RELEASE_NAME%"=="" set "RELEASE_NAME=v2.0.1.Steam.Controller.Viewer"
 
 set "ROOT=%~dp0"
 set "PROJECT=%ROOT%src\SteamControllerGamepadViewer\SteamControllerGamepadViewer.csproj"
@@ -23,6 +23,7 @@ call :ZipFolder "%BASE_OUT%" "%RELEASE_ROOT%\%BASE_NAME%.zip"
 if errorlevel 1 exit /b %errorlevel%
 
 call :DeleteLegacyVariant
+call :DeleteOldV3Variant
 
 echo Created release zip in "%RELEASE_ROOT%"
 exit /b 0
@@ -55,6 +56,12 @@ exit /b %errorlevel%
 set "LEGACY_NAME=%BASE_NAME% (start with Windows)"
 if exist "%RELEASE_ROOT%\%LEGACY_NAME%.zip" del /q "%RELEASE_ROOT%\%LEGACY_NAME%.zip" 2>nul
 if exist "%RELEASE_ROOT%\%LEGACY_NAME%" rmdir /s /q "%RELEASE_ROOT%\%LEGACY_NAME%" 2>nul
+exit /b 0
+
+:DeleteOldV3Variant
+if /i "%BASE_NAME%"=="v3.Steam.Controller.Viewer" exit /b 0
+if exist "%RELEASE_ROOT%\v3.Steam.Controller.Viewer.zip" del /q "%RELEASE_ROOT%\v3.Steam.Controller.Viewer.zip" 2>nul
+if exist "%RELEASE_ROOT%\v3.Steam.Controller.Viewer" rmdir /s /q "%RELEASE_ROOT%\v3.Steam.Controller.Viewer" 2>nul
 exit /b 0
 
 :ZipFolder

@@ -153,7 +153,7 @@ function applyViewStyle(style) {
       btnLines: (style.buttonOutline * 10).toFixed(3),
       linesColor: style.linesColor.hex,
       linesOpac: (style.linesOpacity * 100).toFixed(3),
-      v: "20260618v3",
+      v: "20260713v201",
     });
     art.setAttribute("href", `/controller-art.svg?${artParams}`);
   }

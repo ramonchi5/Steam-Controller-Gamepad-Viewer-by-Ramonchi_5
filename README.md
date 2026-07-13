@@ -21,7 +21,7 @@ This viewer was coded with help from OpenAI Codex. The project is human-directed
 
 ## Presets
 
-Default v3 Preset:
+Default v2.0.1 Preset:
 
 ```text
 http://127.0.0.1:31337/?bodyLines=10___innerBodyLines=10___joystickLines=10___btnLines=10___backBtnLines=10___linesColor=#ffffff___linesOpac=55%___bodyOpac=30%___bodyColor=#000000___btnIdle=#25a7ff___btnIdleOpac=0%___btnPressed=#25a7ff___btnPressedOpac=100%___triggerIdleOpac=0%___triggerIdleLinesOpac=0%___shine=100%
@@ -49,7 +49,7 @@ http://127.0.0.1:31337/?bodyLines=30___innerBodyLines=30___joystickLines=30___bt
 
 You can customize the overlay directly from the OBS Browser Source URL. Options can be separated with `___` for readability, as shown above, or with the normal `&` query separator. Both formats work.
 
-Line thickness uses `10` as the default v3 look. Use `15` for 1.5x, `20` for 2x, `30` for 3x, or `0` to hide that line group.
+Line thickness uses `10` as the default v2 look. Use `15` for 1.5x, `20` for 2x, `30` for 3x, or `0` to hide that line group.
 
 Opacity values accept a percent sign, such as `55%` or `0%`. Colors use normal HTML hex colors, such as `#25a7ff`.
 
@@ -90,7 +90,6 @@ Extra testing options:
 The release zip contains:
 
 - `SteamControllerGamepadViewer.exe`
-- `Stop Steam Controller Viewer.exe`
 - `README.md`
 - `LICENSE`
 - `THIRD_PARTY_NOTICES.md`
@@ -133,7 +132,7 @@ Supported inputs:
 
 Capacitive stick touch controls whether the large moving joystick dots are visible. The small center dots stay visible as neutral reference points. If a stick moves more than about 8% from center, the moving dot is shown even if the capacitive touch sensor misses your thumb.
 
-Gyro is not displayed in v3. A 2D gyro display was tested and removed because it was harder to read than the rest of the overlay.
+Gyro is not displayed. A 2D gyro display was tested and removed because it was harder to read than the rest of the overlay. A dedicated 3D controller viewer is a better fit if you want to show gyro movement clearly.
 
 SDL3 is loaded from the app folder first, then from the default Steam install folders. You can override the path with `--sdl3 "C:\path\to\SDL3.dll"` or the `SDL3_PATH` environment variable.
 
@@ -149,7 +148,7 @@ Build-Release.cmd
 
 The release zip is created under `artifacts\release`:
 
-- `v3.Steam.Controller.Viewer.zip`
+- `v2.0.1.Steam.Controller.Viewer.zip`
 
 Upload that zip to GitHub Releases. Do not upload the normal `publish` folder unless you specifically want a framework-dependent developer build.
 
