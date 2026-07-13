@@ -1,0 +1,34 @@
+/*
+Steam Controller Gamepad Viewer OBS source
+Copyright (C) 2026 ramonchi5
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+*/
+
+#include <plugin-support.h>
+
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+const char *PLUGIN_NAME = "@CMAKE_PROJECT_NAME@";
+const char *PLUGIN_VERSION = "@CMAKE_PROJECT_VERSION@";
+
+void obs_log(int log_level, const char *format, ...)
+{
+	size_t length = 4 + strlen(PLUGIN_NAME) + strlen(format);
+	char *text = malloc(length + 1);
+
+	snprintf(text, length, "[%s] %s", PLUGIN_NAME, format);
+
+	va_list args;
+	va_start(args, format);
+	blogva(log_level, text, args);
+	va_end(args);
+
+	free(text);
+}

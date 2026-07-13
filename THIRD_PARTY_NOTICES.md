@@ -59,6 +59,13 @@ freely, subject to the following restrictions:
 - License: GNU GPL v2.0, https://github.com/univrsal/input-overlay/blob/master/LICENSE
 - Use in this project: OBS overlay workflow reference only. This project does not link against, copy, or vendor `univrsal/input-overlay` source code or assets.
 
+## OBS Studio / libobs
+
+- Component: OBS Studio plugin template, CMake build scaffolding, and `libobs` plugin API.
+- Source: https://github.com/obsproject/obs-studio
+- License: GNU GPL v2.0 or later, https://github.com/obsproject/obs-studio/blob/master/COPYING
+- Use in this project: the native OBS plugin in `obs-plugin/` builds an OBS source module against `libobs`. The plugin code and OBS-plugin build scaffolding are distributed under `obs-plugin/LICENSE-OBS-PLUGIN`; the bundled backend remains under this repository's MIT license.
+
 ## Microsoft .NET
 
 - Component: .NET runtime and ASP.NET Core framework libraries.

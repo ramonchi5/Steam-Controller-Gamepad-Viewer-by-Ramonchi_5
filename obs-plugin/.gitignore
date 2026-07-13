@@ -1,0 +1,5 @@
+.deps/
+build_x64/
+release/
+backend-publish/
+cmake/.CMakeBuildNumber

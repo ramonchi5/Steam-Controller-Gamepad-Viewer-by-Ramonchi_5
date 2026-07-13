@@ -1,0 +1,54 @@
+{
+  "version": 8,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 28,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "windows-x64",
+      "displayName": "Windows x64",
+      "description": "Build the native Steam Controller source for Windows x64",
+      "binaryDir": "${sourceDir}/build_x64",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "architecture": "x64",
+      "warnings": {
+        "dev": true,
+        "deprecated": true
+      },
+      "cacheVariables": {
+        "ENABLE_FRONTEND_API": false,
+        "ENABLE_QT": false
+      }
+    },
+    {
+      "name": "windows-ci-x64",
+      "inherits": ["windows-x64"],
+      "displayName": "Windows x64 CI",
+      "description": "Build the native Steam Controller source on GitHub Actions",
+      "generator": "Visual Studio 17 2022",
+      "cacheVariables": {
+        "CMAKE_COMPILE_WARNING_AS_ERROR": true
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows-x64",
+      "configurePreset": "windows-x64",
+      "displayName": "Windows x64",
+      "configuration": "RelWithDebInfo"
+    },
+    {
+      "name": "windows-ci-x64",
+      "configurePreset": "windows-ci-x64",
+      "displayName": "Windows x64 CI",
+      "configuration": "RelWithDebInfo"
+    }
+  ]
+}
